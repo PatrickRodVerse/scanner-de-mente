@@ -86,8 +86,12 @@ def verified_redist():
                 shutil.copyfileobj(response, output)
         path.with_suffix(".download").replace(path)
     quoted = str(path).replace("'", "''")
-    subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command",
-                    f"$s = Get-AuthenticodeSignature -LiteralPath '{quoted}'; "
+    powershell = Path(os.environ["SystemRoot"]) / "System32/WindowsPowerShell/v1.0/powershell.exe"
+    subprocess.run([str(powershell), "-NoProfile", "-NonInteractive", "-Command",
+                    "Import-Module (Join-Path $PSHOME "
+                    "'Modules/Microsoft.PowerShell.Security/Microsoft.PowerShell.Security.psd1') "
+                    "-ErrorAction Stop; "
+                    f"$s = Get-AuthenticodeSignature -LiteralPath '{quoted}' -ErrorAction Stop; "
                     "if ($s.Status -ne 'Valid' -or $s.SignerCertificate.Subject -notlike "
                     "'*Microsoft Corporation*') { throw 'Invalid Microsoft runtime signature' }"],
                    check=True, timeout=120)
