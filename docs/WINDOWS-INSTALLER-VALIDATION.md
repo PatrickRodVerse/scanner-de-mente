@@ -1,5 +1,17 @@
 # Windows installer validation — 2026-11-08
 
+## Published release v0.1.2
+
+The [GitHub Windows build and installation check](https://github.com/PatrickRodVerse/scanner-de-mente/actions/runs/42502196523)
+passed on a second Windows machine before publishing the release. The released
+`Scanner-de-Mente-Setup-x64.exe` is 156,309,168 bytes. Its SHA-256 is:
+
+`88f193b98411f2b0d3df29696b0caf1487bbb490846293913d3090e3c73e832d`
+
+[Download the actual application installer](https://github.com/PatrickRodVerse/scanner-de-mente/releases/latest/download/Scanner-de-Mente-Setup-x64.exe).
+
+## Local build and checks
+
 Built `Scanner-de-Mente-Setup-x64.exe` version 0.1.0 with Inno Setup 7.1.1,
 CPython 3.11.15 x64 and `requirements-windows.lock`. The local build is
 156,306,834 bytes (149.1 MiB). Its SHA-256 is:
