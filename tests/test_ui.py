@@ -23,14 +23,14 @@ MEMORY = {"available_gib": 4, "total_gib": 16, "minimum_gib": 3, "can_run": True
 class UiTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         (self.root / "ui").mkdir()
         (self.root / "ui/index.html").write_text("<h1>Local</h1>", encoding="utf-8")
         (self.root / "secret.txt").write_text("outside", encoding="utf-8")
         self.commands = []
         self.entered, self.release = threading.Event(), threading.Event()
         self.block = False
-        self.fail = False
+        self.fail_command = False
         self.fail_graph = False
         self.memory = dict(MEMORY)
         self.app = LabApplication(self.root, "graphify-python", runner=self.runner,
@@ -53,7 +53,7 @@ class UiTests(unittest.TestCase):
         self.entered.set()
         if self.block:
             self.release.wait(2)
-        if self.fail:
+        if self.fail_command:
             raise RuntimeError("fixture failed")
         output = Path(command[command.index("--output") + 1])
         if "lab.patching" in command:
@@ -191,7 +191,7 @@ class UiTests(unittest.TestCase):
         artifacts.mkdir()
         previous = artifacts / "patching.json"
         previous.write_text('{"previous": true}', encoding="utf-8")
-        self.block, self.fail = True, True
+        self.block, self.fail_command = True, True
         self.assertEqual(self.request("POST", "/api/run", PAYLOAD)[0], 202)
         self.assertTrue(self.entered.wait(1))
         self.assertEqual(self.request("POST", "/api/repository", {})[0], 409)
