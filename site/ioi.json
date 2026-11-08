@@ -1,0 +1,278 @@
+{
+  "model": "openai-community/gpt2",
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "source_layer": 6,
+  "downstream_layer": 8,
+  "scan": {
+    "tokens": [
+      "When",
+      " John",
+      " and",
+      " Mary",
+      " went",
+      " to",
+      " the",
+      " shops",
+      ",",
+      " John",
+      " gave",
+      " the",
+      " bag",
+      " to"
+    ],
+    "patches": [
+      {
+        "layer": 0,
+        "position": 9,
+        "patched_score": 2.8707275390625,
+        "effect": 5.6735076904296875,
+        "recovery": 0.9995752425553193
+      },
+      {
+        "layer": 0,
+        "position": 13,
+        "patched_score": -2.805206298828125,
+        "effect": -0.0024261474609375,
+        "recovery": -0.0004274457829381924
+      },
+      {
+        "layer": 1,
+        "position": 9,
+        "patched_score": 2.8690185546875,
+        "effect": 5.6717987060546875,
+        "recovery": 0.9992741486704824
+      },
+      {
+        "layer": 1,
+        "position": 13,
+        "patched_score": -2.7933349609375,
+        "effect": 0.0094451904296875,
+        "recovery": 0.0016640813813757302
+      },
+      {
+        "layer": 2,
+        "position": 9,
+        "patched_score": 2.8487319946289062,
+        "effect": 5.651512145996094,
+        "recovery": 0.9957000029571721
+      },
+      {
+        "layer": 2,
+        "position": 13,
+        "patched_score": -2.8006668090820312,
+        "effect": 0.00211334228515625,
+        "recovery": 0.0003723348486599978
+      },
+      {
+        "layer": 3,
+        "position": 9,
+        "patched_score": 2.768463134765625,
+        "effect": 5.5712432861328125,
+        "recovery": 0.9815579995537358
+      },
+      {
+        "layer": 3,
+        "position": 13,
+        "patched_score": -2.7953262329101562,
+        "effect": 0.00745391845703125,
+        "recovery": 0.0013132532387755158
+      },
+      {
+        "layer": 4,
+        "position": 9,
+        "patched_score": 2.479766845703125,
+        "effect": 5.2825469970703125,
+        "recovery": 0.9306946397223484
+      },
+      {
+        "layer": 4,
+        "position": 13,
+        "patched_score": -2.8046112060546875,
+        "effect": -0.0018310546875,
+        "recovery": -0.000322600590896749
+      },
+      {
+        "layer": 5,
+        "position": 9,
+        "patched_score": 2.496795654296875,
+        "effect": 5.2995758056640625,
+        "recovery": 0.9336948252176882
+      },
+      {
+        "layer": 5,
+        "position": 13,
+        "patched_score": -2.7972412109375,
+        "effect": 0.0055389404296875,
+        "recovery": 0.0009758667874626658
+      },
+      {
+        "layer": 6,
+        "position": 9,
+        "patched_score": 2.2780685424804688,
+        "effect": 5.080848693847656,
+        "recovery": 0.8951588404659427
+      },
+      {
+        "layer": 6,
+        "position": 13,
+        "patched_score": -2.7462005615234375,
+        "effect": 0.05657958984375,
+        "recovery": 0.009968358258709543
+      },
+      {
+        "layer": 7,
+        "position": 9,
+        "patched_score": 0.7372055053710938,
+        "effect": 3.5399856567382812,
+        "recovery": 0.6236850665498136
+      },
+      {
+        "layer": 7,
+        "position": 13,
+        "patched_score": -1.2807846069335938,
+        "effect": 1.5219955444335938,
+        "recovery": 0.268149643660764
+      },
+      {
+        "layer": 8,
+        "position": 9,
+        "patched_score": -1.9714202880859375,
+        "effect": 0.83135986328125,
+        "recovery": 0.14647142162015395
+      },
+      {
+        "layer": 8,
+        "position": 13,
+        "patched_score": 1.8046951293945312,
+        "effect": 4.607475280761719,
+        "recovery": 0.8117585227043608
+      },
+      {
+        "layer": 9,
+        "position": 9,
+        "patched_score": -2.4256210327148438,
+        "effect": 0.37715911865234375,
+        "recovery": 0.06644900087908662
+      },
+      {
+        "layer": 9,
+        "position": 13,
+        "patched_score": 2.5762481689453125,
+        "effect": 5.3790283203125,
+        "recovery": 0.9476930025243496
+      },
+      {
+        "layer": 10,
+        "position": 9,
+        "patched_score": -2.3860321044921875,
+        "effect": 0.416748046875,
+        "recovery": 0.07342389448810006
+      },
+      {
+        "layer": 10,
+        "position": 13,
+        "patched_score": 2.7672195434570312,
+        "effect": 5.569999694824219,
+        "recovery": 0.9813388999857519
+      },
+      {
+        "layer": 11,
+        "position": 9,
+        "patched_score": -2.8027801513671875,
+        "effect": 0.0,
+        "recovery": 0.0
+      },
+      {
+        "layer": 11,
+        "position": 13,
+        "patched_score": 2.873138427734375,
+        "effect": 5.6759185791015625,
+        "recovery": 1.0
+      }
+    ],
+    "clean_score": 2.873138427734375,
+    "corrupt_score": -2.8027801513671875,
+    "controls": {
+      "corrupt_identity_error": 0.0,
+      "clean_identity_error": 0.0,
+      "final_restore_error": 0.0,
+      "final_nonlast_effect": 0.0,
+      "final_nonlast_position": 9,
+      "final_restore_recovery": 1.0
+    }
+  },
+  "cases": [
+    {
+      "id": "original",
+      "clean_prompt": "When John and Mary went to the shops, John gave the bag to",
+      "corrupt_prompt": "When John and Mary went to the shops, Mary gave the bag to",
+      "target": "Mary",
+      "contrast": "John",
+      "edited_position": 9,
+      "last_position": 13,
+      "scores": {
+        "clean": 2.873138427734375,
+        "corrupt": -2.8027801513671875,
+        "restore": 2.2780685424804688,
+        "clamp_last": -2.8027801513671875,
+        "restore_clamp_last": -1.8511428833007812,
+        "clamp_adjacent": -2.8027801513671875,
+        "restore_clamp_adjacent": 2.2750625610351562
+      }
+    },
+    {
+      "id": "reverse",
+      "clean_prompt": "When John and Mary went to the shops, Mary gave the bag to",
+      "corrupt_prompt": "When John and Mary went to the shops, John gave the bag to",
+      "target": "John",
+      "contrast": "Mary",
+      "edited_position": 9,
+      "last_position": 13,
+      "scores": {
+        "clean": 2.8027801513671875,
+        "corrupt": -2.873138427734375,
+        "restore": 2.2033462524414062,
+        "clamp_last": -2.873138427734375,
+        "restore_clamp_last": -1.9222412109375,
+        "clamp_adjacent": -2.873138427734375,
+        "restore_clamp_adjacent": 2.1995086669921875
+      }
+    },
+    {
+      "id": "names",
+      "clean_prompt": "When Alice and Bob went to the shops, Alice gave the bag to",
+      "corrupt_prompt": "When Alice and Bob went to the shops, Bob gave the bag to",
+      "target": "Bob",
+      "contrast": "Alice",
+      "edited_position": 9,
+      "last_position": 13,
+      "scores": {
+        "clean": 2.6105880737304688,
+        "corrupt": -2.9495162963867188,
+        "restore": 2.5084609985351562,
+        "clamp_last": -2.9495162963867188,
+        "restore_clamp_last": -1.775421142578125,
+        "clamp_adjacent": -2.9495162963867188,
+        "restore_clamp_adjacent": 2.506591796875
+      }
+    },
+    {
+      "id": "template",
+      "clean_prompt": "After Sarah and David went to the park, David gave a book to",
+      "corrupt_prompt": "After Sarah and David went to the park, Sarah gave a book to",
+      "target": "Sarah",
+      "contrast": "David",
+      "edited_position": 9,
+      "last_position": 13,
+      "scores": {
+        "clean": 3.7960052490234375,
+        "corrupt": -1.240020751953125,
+        "restore": 3.4571914672851562,
+        "clamp_last": -1.240020751953125,
+        "restore_clamp_last": -0.2868194580078125,
+        "clamp_adjacent": -1.240020751953125,
+        "restore_clamp_adjacent": 3.4545822143554688
+      }
+    }
+  ]
+}

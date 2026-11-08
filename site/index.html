@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#16302f">
+  <meta name="description" content="Learn activation patching with a measured GPT-2 Small experiment. Install the local lab to run your own prompt pairs and export the results.">
+  <title>Scanner de Mente | GPT-2 Activation Patching Lab</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body id="inicio">
+  <a class="skip" href="#experimento">Skip to the experiment</a>
+  <header class="masthead">
+    <div class="shell masthead-inner">
+      <a href="#inicio" class="brand">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 9h7l8 14h7M5 23h7l8-14h7M12 9v14m8-14v14"/><circle cx="5" cy="9" r="2"/><circle cx="5" cy="23" r="2"/><circle cx="27" cy="9" r="2"/><circle cx="27" cy="23" r="2"/></svg>
+        Scanner de Mente
+      </a>
+      <nav aria-label="Study sections"><a href="#experimento">Study</a><a href="#evidencias">Evidence</a><a href="#install">Install</a><a href="#metodo">Method</a></nav>
+    </div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="titulo">
+      <div class="shell hero-sheet">
+        <div class="hero-copy">
+          <h1 id="titulo">Trace a model’s<br>choice</h1>
+          <p>Learn activation patching by seeing how a change inside GPT‑2 Small shifts its preference between two names.</p>
+          <div class="hero-actions"><a class="action" href="#experimento">Explore the experiment <span aria-hidden="true">↓</span></a><a href="#install">Install the lab</a></div>
+        </div>
+        <figure class="hero-figure" data-ui aria-labelledby="titulo-grafico">
+          <figcaption>
+            <h2 id="titulo-grafico">Where a patch has an effect</h2>
+            <p>Recovery of the score gap between the names</p>
+          </figcaption>
+          <div class="chart" id="chart">
+            <svg id="scan-chart" role="img" aria-labelledby="scan-title scan-description"></svg>
+          </div>
+          <div class="legend" aria-hidden="true"><span><i></i> Changed name</span><span><i></i> Final token</span></div>
+          <p class="figure-note">100% restores the reference score gap. Each point is a separate patch.</p>
+        </figure>
+        <div class="sheet-foot"><span>Study 01 · Who gets the bag?</span><span>12 blocks · 24 measured interventions</span></div>
+      </div>
+    </section>
+
+    <section class="shell experiment" id="experimento" aria-labelledby="titulo-experimento">
+      <div class="section-heading">
+        <div><h2 id="titulo-experimento">Who gets the object?</h2><p>Change who gives it away and see how GPT‑2’s prediction shifts.</p></div>
+        <label class="case-picker" for="case">Prompt pair<select id="case" disabled><option value="original">John and Mary</option><option value="reverse">John and Mary · reverse direction</option><option value="names">Alice and Bob</option><option value="template">Sarah and David · new wording</option></select></label>
+      </div>
+      <p class="notice" id="load-status" role="status" hidden>Loading study measurements…</p>
+      <noscript><p>Enable JavaScript for the interactive comparison. You can still read the findings below or open the <a href="./ioi.json">measurement data</a>.</p></noscript>
+      <div class="workbench" id="workbench" data-ui hidden>
+        <div class="context-sheet">
+          <h3>What the model read</h3>
+          <div class="prompt"><span>Reference prompt</span><p id="clean-prompt"></p><small id="clean-gloss"></small></div>
+          <div class="prompt"><span>Changed prompt</span><p id="corrupt-prompt"></p><small id="corrupt-gloss"></small></div>
+          <p class="context-note">A token is a piece of text. Each name here is one token. These controls replay saved measurements. The installed lab runs GPT‑2 on your own prompts.</p>
+        </div>
+        <div class="result-sheet">
+          <fieldset>
+            <legend>Choose an intervention</legend>
+            <div class="conditions">
+              <label><input type="radio" name="condition" value="corrupt" checked><span>Changed prompt</span></label>
+              <label><input type="radio" name="condition" value="restore"><span>Restore the name</span></label>
+              <label><input type="radio" name="condition" value="restore_clamp_last"><span>Restore + hold final token</span></label>
+              <label><input type="radio" name="condition" value="restore_clamp_adjacent"><span>Restore + hold neighbor</span></label>
+            </div>
+          </fieldset>
+          <div class="result" aria-live="polite" aria-atomic="true">
+            <div class="result-heading"><div><strong id="favored"></strong><span>Favored name</span></div><div><strong id="score"></strong><span id="score-label"></span></div></div>
+            <div class="meter" aria-hidden="true"><i id="meter-fill"></i><b></b></div>
+            <div class="meter-labels" aria-hidden="true"><span id="meter-left"></span><span>tie</span><span id="meter-right"></span></div>
+            <p id="condition-note"></p>
+            <p class="effect" id="effect"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence-field" id="evidencias" aria-labelledby="titulo-evidencias">
+      <div class="shell evidence-layout">
+        <div>
+          <h2 id="titulo-evidencias">The effect gets smaller</h2>
+          <p>Holding the final token’s state fixed weakened the name restoration. Holding its neighbor fixed preserved almost all of the effect.</p>
+          <p>In the original example, holding the final state fixed reduced the effect from <strong>+5.08 to +0.95 logits</strong>.</p>
+        </div>
+        <div class="evidence-sheet">
+          <h3>Four comparisons</h3>
+          <p class="subtle">Change in the logit gap after restoring the name, measured against the matching control.</p>
+          <table>
+            <thead><tr><th scope="col">Pair</th><th scope="col">Restore only</th><th scope="col">Hold final</th><th scope="col">Drop</th></tr></thead>
+            <tbody id="evidence-rows"></tbody>
+          </table>
+          <p class="subtle">The reverse comparison swaps which prompt serves as the reference.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell method" id="install" aria-labelledby="install-title">
+      <div class="section-heading"><div><h2 id="install-title">Run your own tests</h2><p>Install the Windows lab to run real GPT‑2 experiments in a browser on your computer.</p></div><a class="action install-download" href="https://github.com/PatrickRodVerse/scanner-de-mente/releases/latest/download/Scanner-de-Mente-Setup-x64.exe">Download Windows installer (.exe) <span aria-hidden="true">↓</span></a></div>
+      <div class="method-columns">
+        <div><h3>Set up the app</h3><ol class="install-steps"><li>Download and run <code>Scanner-de-Mente-Setup-x64.exe</code> on Windows 10 or 11 x64. Python and dependencies are included.</li><li>Open Scanner de Mente from the Start menu or desktop. Approve the Microsoft runtime installer if requested during setup.</li><li>Run an experiment in the browser tab that opens. The first run downloads the GPT‑2 checkpoint.</li></ol><p class="subtle">Allow a few gigabytes of disk space and 3 GiB of available RAM for an experiment. Internet is needed for the first model download (about 550 MB). The installer is unsigned; its SHA-256 checksum is on the <a href="https://github.com/PatrickRodVerse/scanner-de-mente/releases/latest">release page</a>. <a href="https://github.com/PatrickRodVerse/scanner-de-mente">View the open source code (MIT)</a>.</p></div>
+        <div><h3>Change the prompts</h3><p>Start with the example, then edit the reference and changed prompts. Keep the same token count in both prompts and choose two distinct names that each tokenize to one token. Run the comparison, inspect a block and token in the heatmap, then export the measured result as JSON.</p></div>
+      </div>
+    </section>
+
+    <section class="shell method" id="metodo" aria-labelledby="titulo-metodo">
+      <div class="section-heading"><div><h2 id="titulo-metodo">How do we know?</h2><p>Read the method and check the measurements.</p></div><a class="download" href="./ioi.json" download="scanner-de-mente-ioi.json">Download measurements <span aria-hidden="true">↓</span></a></div>
+      <div class="method-columns">
+        <div><h3>What we changed</h3><p>An internal state is a vector of numbers the model keeps at a token position. We copy the reference state of the changed name after block 6. To test whether the effect depends on the final token, we hold that token’s state after block 8 at its value in the changed prompt. Block numbers start at zero.</p></div>
+        <div><h3>What the evidence supports</h3><p>In these prompt pairs, much of the effect of restoring the name depends on the update at the final token. We intervene on the entire vector at each position. The roles of individual attention heads and paths are still open questions.</p></div>
+      </div>
+      <details class="method-detail"><summary>View controls and reproduce on CPU</summary><p>A logit is a score before probabilities are calculated. The effect is the difference between a restoration and its matching control. Recovery scales that change against the gap between the two prompts. Copying the last state of the reference prompt at the final block recovered the full gap. Holding either position without restoring the name left its control score unchanged within numerical tolerance.</p><p>This page replays measurements from checkpoint <code id="revision">GPT‑2 Small</code>. From the extracted lab folder, use the installed Python environment to reproduce the study.</p><pre><code>.venv\Scripts\python.exe -m lab.ioi_case --output artifacts/reference-ioi.json</code></pre></details>
+    </section>
+  </main>
+  <footer class="footer"><div class="shell footer-inner"><span>Scanner de Mente</span><a href="https://arxiv.org/abs/2211.00593">Related research by Wang et al.</a><a href="#inicio">Back to top ↑</a></div></footer>
+</body>
+</html>

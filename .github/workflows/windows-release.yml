@@ -1,0 +1,95 @@
+name: Build Windows installer
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+        with:
+          version: '0.12.3'
+      - name: Install locked Python environment
+        run: |
+          uv python install 3.11.15
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          uv venv --python 3.11.15 .venv
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          uv pip sync --python .venv/Scripts/python.exe requirements-windows.lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Test application
+        run: |
+          & .venv/Scripts/python.exe -m unittest discover -s tests -v
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node tests/test_ui_data.mjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node tests/test_public_case.mjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Install Inno Setup
+        run: |
+          if (Get-Command winget -ErrorAction SilentlyContinue) {
+            winget install --id JRSoftware.InnoSetup.7 --version 7.1.1 --exact --scope user --silent --accept-source-agreements --accept-package-agreements --disable-interactivity
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          } else {
+            $setup = Join-Path $env:RUNNER_TEMP 'innosetup-7.1.1-x64.exe'
+            Invoke-WebRequest https://github.com/jrsoftware/issrc/releases/download/is-7_1_1/innosetup-7.1.1-x64.exe -OutFile $setup
+            if ((Get-FileHash -LiteralPath $setup -Algorithm SHA256).Hash -ne '8A5A6711C3766A6E5FB74F280BA0E3551E719CE94538D901FDBD1F8F9920B3F0') { throw 'Inno Setup checksum mismatch.' }
+            $install = Start-Process -FilePath $setup -ArgumentList '/CURRENTUSER /VERYSILENT /SUPPRESSMSGBOXES /NORESTART' -WindowStyle Hidden -Wait -PassThru
+            if ($install.ExitCode) { exit $install.ExitCode }
+          }
+      - name: Build installer
+        env:
+          RELEASE_REF: ${{ github.ref_name }}
+          RELEASE_REF_TYPE: ${{ github.ref_type }}
+        run: |
+          $compilerPaths = @(
+            "${env:ProgramFiles(x86)}\Inno Setup 7\ISCC.exe",
+            "$env:ProgramFiles\Inno Setup 7\ISCC.exe",
+            "$env:LOCALAPPDATA\Programs\Inno Setup 7\ISCC.exe"
+          )
+          $compiler = $compilerPaths | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+          if (-not $compiler) { throw 'Inno Setup 7 compiler not found.' }
+          $appVersion = if ($env:RELEASE_REF_TYPE -eq 'tag') { $env:RELEASE_REF.Substring(1) } else { '0.1.0' }
+          & .venv/Scripts/python.exe scripts/build_windows.py --iscc $compiler --version $appVersion
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Verify installed application and uninstall
+        run: |
+          & .venv/Scripts/python.exe scripts/check_windows_install.py dist/Scanner-de-Mente-Setup-x64.exe
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: |
+            dist/Scanner-de-Mente-Setup-x64.exe
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-installer
+          path: dist
+      - name: Publish tested installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/Scanner-de-Mente-Setup-x64.exe dist/SHA256SUMS.txt --verify-tag --generate-notes --title "Scanner de Mente $RELEASE_TAG"

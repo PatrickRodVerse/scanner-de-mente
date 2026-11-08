@@ -1,0 +1,11 @@
+.venv/
+.cache/
+__pycache__/
+*.pyc
+artifacts/
+graphify-out/
+.graphify/
+.taste-skill/
+/site/scanner-de-mente-lab.zip
+build/
+dist/
